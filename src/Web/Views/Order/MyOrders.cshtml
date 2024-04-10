@@ -31,7 +31,7 @@
                         <a class="esh-orders-link" asp-controller="Order" asp-action="Detail" asp-route-orderId="@item.OrderNumber">Detail</a>
                     </section>
                     <section class="esh-orders-item col-xs-1">
-                        @if (item.State.State is OrderStateType.Pending or OrderStateType.Preparing or OrderStateType.Shipping)
+                        @if (item.State.State is OrderStateType.Pending or OrderStateType.Preparing or OrderStateType.Shipping or OrderStateType.Approved)
                         {
                             <a class="esh-orders-link" asp-controller="Order" asp-action="Cancel" asp-route-orderId="@item.OrderNumber">Cancel</a>
                         }
