@@ -1,0 +1,243 @@
+﻿@inject ILogger<Details> Logger
+@inject IJSRuntime JSRuntime
+@inject IOrderService OrderService
+
+@inherits BlazorAdmin.Helpers.BlazorComponent
+
+@namespace BlazorAdmin.Pages.OrderPage
+
+<div class="modal @_modalClass" tabindex="-1" role="dialog" style="display:@_modalDisplay">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Order.OrderDate.Date.ToString("dd.MM.yyyy HH:mm") - Detail </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                @if (Order == null)
+                {
+                    <Spinner></Spinner>
+                }
+                else
+                {
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        User Detail
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                User E-Mail :
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Order.BuyerId
+                                            </div>
+                                            <div class="col-md-6">
+                                                Order Amount :
+                                            </div>
+                                            <div class="col-md-6">
+                                                <span class="oi oi-dollar" aria-hidden="true"></span> @Order.Total
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Shipment Address
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                Street :
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Order.ShipToAddress.Street
+                                            </div>
+                                            <div class="col-md-3">
+                                                State :
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Order.ShipToAddress.State
+                                            </div>
+                                            <div class="col-md-3">
+                                                City :
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Order.ShipToAddress.City
+                                            </div>
+                                            <div class="col-md-3">
+                                                Country :
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Order.ShipToAddress.Country
+                                            </div>
+                                            <div class="col-md-6">
+                                                Zip Code :
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Order.ShipToAddress.ZipCode
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Order Status
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Last Status Change Time :
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Order.State.UpdateTime.Date.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                            </div>
+                                            <div class="col-md-6">
+                                                Current Status :
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    switch (Order.State.State)
+                                                    {
+                                                        case OrderStateType.Pending:
+                                                            <span class="badge badge-pill badge-secondary">Pending</span>
+                                                            break;
+                                                        case OrderStateType.Preparing:
+                                                            <span class="badge badge-pill badge-info">Preparing</span>
+                                                            break;
+                                                        case OrderStateType.Shipping:
+                                                            <span class="badge badge-pill badge-warning">Shipping</span>
+                                                            break;
+                                                        case OrderStateType.Completed:
+                                                            <span class="badge badge-pill badge-success">Completed</span>
+                                                            break;
+                                                        case OrderStateType.Cancelled:
+                                                            <span class="badge badge-pill badge-danger">Cancelled</span>
+                                                            break;
+                                                            case OrderStateType.Approved:
+                                                            <span class="badge badge-pill badge-primary">Approved</span>
+                                                            break;
+                                                        default:
+                                                            <span class="badge badge-pill badge-secondary">@Order.State.State.ToString()</span>
+                                                            break;
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            @foreach (var item in Order.OrderItems)
+                            {
+                                @if (item.ItemOrdered.PictureUri != null && !string.IsNullOrEmpty(item.ItemOrdered.PictureUri))
+                                {
+                                    <img class="col-md-6 esh-picture" src="@($"{item.ItemOrdered.PictureUri}")">
+                                }
+
+                                <dl class="col-md-@(item.ItemOrdered.PictureUri != null && !string.IsNullOrEmpty(item.ItemOrdered.PictureUri) ? "6" : "12") dl-horizontal">
+                                    <dt>
+                                        Name
+                                    </dt>
+
+                                    <dd>
+                                        @item.ItemOrdered.ProductName
+                                    </dd>
+
+                                    <dt>
+                                        Unit Price
+                                    </dt>
+
+                                    <dd>
+                                        @item.UnitPrice
+                                    </dd>
+
+                                    <dt>
+                                        Units
+                                    </dt>
+
+                                    <dd>
+                                        @item.Units
+                                    </dd>
+
+                                </dl>
+
+                            }
+
+
+
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="SetApproved">Set Approved</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (_showDetailsModal)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnApprovedClick { get; set; }
+    private string _modalDisplay = "none;";
+    private string _modalClass = "";
+    private bool _showDetailsModal = false;
+    private Order Order { get; set; }
+    private int OrderId { get; set; }
+
+
+    public async Task Open(int id)
+    {
+
+        Logger.LogInformation("Now loading... /Order/Details/{Id}", id);
+
+        await new Css(JSRuntime).HideBodyOverflow();
+        OrderId = id;
+        Order = await OrderService.GetAsync(id);
+
+        _modalDisplay = "block;";
+        _modalClass = "Show";
+        _showDetailsModal = true;
+
+        StateHasChanged();
+    }
+
+    public async Task Close()
+    {
+        await new Css(JSRuntime).ShowBodyOverflow();
+
+        _modalDisplay = "none";
+        _modalClass = "";
+        _showDetailsModal = false;
+    }
+    public async Task SetApproved()
+    {
+        await OrderService.UpdateOrderStateAsync(OrderId, OrderStateType.Approved);
+        await OnApprovedClick.InvokeAsync(null);
+        await Close();
+    }
+
+}

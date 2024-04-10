@@ -29,19 +29,27 @@ public class OrderBuilder
     {
         var orderItem = new OrderItem(TestCatalogItemOrdered, TestUnitPrice, TestUnits);
         var itemList = new List<OrderItem>() { orderItem };
-        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), itemList);
+        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), itemList,new OrderState()
+        {
+            State = OrderStateType.Pending,
+            UpdateTime = DateTimeOffset.Now
+        });
         return _order;
     }
 
     public Order WithNoItems()
     {
-        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), new List<OrderItem>());
+        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), new List<OrderItem>(), new OrderState() { State = OrderStateType.Pending, UpdateTime = DateTimeOffset.Now });
         return _order;
     }
 
     public Order WithItems(List<OrderItem> items)
     {
-        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), items);
+        _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), items,new OrderState()
+        {
+            State = OrderStateType.Pending,
+            UpdateTime = DateTimeOffset.Now
+        });
         return _order;
     }
 }

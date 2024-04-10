@@ -40,6 +40,14 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                 .IsRequired();
         });
 
+        builder.OwnsOne(o => o.State, a =>
+        {
+            a.WithOwner();
+            a.Property(x => x.State).IsRequired().HasDefaultValue(OrderStateType.Pending);
+            a.Property(x => x.UpdateTime).IsRequired();
+        });
+
         builder.Navigation(x => x.ShipToAddress).IsRequired();
+        builder.Navigation(x => x.State).IsRequired();
     }
 }

@@ -178,4 +178,7 @@ app.MapEndpoints();
 app.Logger.LogInformation("LAUNCHING PublicApi");
 app.Run();
 
-public partial class Program { }
+namespace Microsoft.eShopWeb.PublicApi
+{
+    public partial class Program { }
+}

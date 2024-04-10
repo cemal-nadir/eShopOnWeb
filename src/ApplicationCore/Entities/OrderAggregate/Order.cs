@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ardalis.GuardClauses;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
@@ -10,18 +11,19 @@ public class Order : BaseEntity, IAggregateRoot
     #pragma warning disable CS8618 // Required by Entity Framework
     private Order() {}
 
-    public Order(string buyerId, Address shipToAddress, List<OrderItem> items)
+    public Order(string buyerId, Address shipToAddress, List<OrderItem> items,OrderState state)
     {
         Guard.Against.NullOrEmpty(buyerId, nameof(buyerId));
 
         BuyerId = buyerId;
         ShipToAddress = shipToAddress;
         _orderItems = items;
+        State=state;
     }
-
     public string BuyerId { get; private set; }
     public DateTimeOffset OrderDate { get; private set; } = DateTimeOffset.Now;
     public Address ShipToAddress { get; private set; }
+    public OrderState State { get; private set; }
 
     // DDD Patterns comment
     // Using a private collection field, better for DDD Aggregate's encapsulation
@@ -37,11 +39,6 @@ public class Order : BaseEntity, IAggregateRoot
 
     public decimal Total()
     {
-        var total = 0m;
-        foreach (var item in _orderItems)
-        {
-            total += item.UnitPrice * item.Units;
-        }
-        return total;
+        return _orderItems.Sum(item => item.UnitPrice * item.Units);
     }
 }

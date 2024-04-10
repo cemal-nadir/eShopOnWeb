@@ -1,0 +1,28 @@
+﻿@model OrderDetailViewModel
+@{
+    ViewData["Title"] = "Cancel Order";
+}
+
+
+<div class="container">
+    <form  method="post">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">Are you sure you want to cancel the order? </h4>
+                    <p>The entire process of this order will be canceled and the refund process will be initiated. This process is irreversible.</p>
+                    <hr>
+                    <p class="mb-0">Are you sure you want to do this?</p>
+                </div>
+            </div>
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+                <a asp-action="MyOrders" class="btn btn-block btn-secondary">Back</a>
+                <button type="submit" class="btn btn-block btn-danger">Cancel Order</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+

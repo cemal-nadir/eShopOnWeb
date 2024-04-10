@@ -1,0 +1,80 @@
+﻿@inject IJSRuntime JSRuntime
+@inject IOrderService OrderService
+
+@inherits BlazorAdmin.Helpers.BlazorComponent
+
+@namespace BlazorAdmin.Pages.OrderPage
+
+<div class="modal @_modalClass" tabindex="-1" role="dialog" style="display:@_modalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <CustomInputSelect @bind-Value="Selected" class="form-control">
+
+                                @foreach (var state in Enum.GetValues(typeof(OrderStateType)))
+                                {
+                                    <option value="@state">@state.ToString()</option>
+                                }
+                            </CustomInputSelect>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Save">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (_showDetailsModal)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+
+    private string _modalDisplay = "none;";
+    private string _modalClass = "";
+    private bool _showDetailsModal = false;
+    private OrderStateType Selected { get; set; } = OrderStateType.Pending;
+    private int OrderId { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSaveClick { get; set; }
+
+    public async Task Open(int id, OrderStateType type)
+    {
+        await new Css(JSRuntime).HideBodyOverflow();
+        Selected = type;
+        OrderId = id;
+        _modalDisplay = "block;";
+        _modalClass = "Show";
+        _showDetailsModal = true;
+
+        StateHasChanged();
+    }
+    public async Task Save()
+    {
+        await OrderService.UpdateOrderStateAsync(OrderId, Selected);
+        await OnSaveClick.InvokeAsync(null);
+        await Close();
+    }
+    public async Task Close()
+    {
+        await new Css(JSRuntime).ShowBodyOverflow();
+
+        _modalDisplay = "none";
+        _modalClass = "";
+        _showDetailsModal = false;
+    }
+
+}

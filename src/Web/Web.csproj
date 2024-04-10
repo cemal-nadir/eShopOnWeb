@@ -83,4 +83,10 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Order\Cancel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Order\Cancel.cshtml" />
+  </ItemGroup>
 </Project>

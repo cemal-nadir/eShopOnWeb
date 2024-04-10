@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
@@ -46,7 +47,8 @@ public class OrderService : IOrderService
             return orderItem;
         }).ToList();
 
-        var order = new Order(basket.BuyerId, shippingAddress, items);
+        var order = new Order(basket.BuyerId, shippingAddress, items,
+            new OrderState() { State = OrderStateType.Pending, UpdateTime = DateTimeOffset.Now });
 
         await _orderRepository.AddAsync(order);
     }

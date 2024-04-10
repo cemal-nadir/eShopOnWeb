@@ -47,12 +47,20 @@ public class CustomerOrdersWithItemsSpecification
             new List<OrderItem>
             {
                     new OrderItem(new CatalogItemOrdered(1, "Product1", "testurl"), 10.50m, 1)
+            },new OrderState()
+            {
+                State = OrderStateType.Pending,
+                UpdateTime = DateTimeOffset.Now
             }));
         ordersList.Add(new Order(_buyerId, _shipToAddress,
             new List<OrderItem>
             {
                     new OrderItem(new CatalogItemOrdered(2, "Product2", "testurl"), 15.50m, 2),
                     new OrderItem(new CatalogItemOrdered(2, "Product3", "testurl"), 20.50m, 1)
+            },new OrderState()
+            {
+                State = OrderStateType.Pending,
+                UpdateTime = DateTimeOffset.Now
             }));
 
         return ordersList;

@@ -14,13 +14,17 @@
                 <section class="esh-orders-detail-title col-xs-3">Date</section>
                 <section class="esh-orders-detail-title col-xs-2">Total</section>
                 <section class="esh-orders-detail-title col-xs-3">Status</section>
+                <section class="esh-orders-detail-title col-xs-3">Status Change Time</section>
+
             </article>
 
             <article class="esh-orders-detail-items row">
                 <section class="esh-orders-detail-item col-xs-3">@Model.OrderNumber</section>
                 <section class="esh-orders-detail-item col-xs-3">@Model.OrderDate</section>
                 <section class="esh-orders-detail-item col-xs-2">$@Model.Total.ToString("N2")</section>
-                <section class="esh-orders-detail-item col-xs-3">@Model.Status</section>
+                <section class="esh-orders-detail-item col-xs-3">@Model.State?.State</section>
+                <section class="esh-orders-detail-item col-xs-3">@Model.State?.UpdateTime.Date.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</section>
+
             </article>
         </section>
 

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.eShopWeb.Web.Features.CancelOrder;
 using Microsoft.eShopWeb.Web.Features.MyOrders;
 using Microsoft.eShopWeb.Web.Features.OrderDetails;
 
@@ -41,4 +42,30 @@ public class OrderController : Controller
 
         return View(viewModel);
     }
+    public async Task<IActionResult> Cancel(int orderId)
+    {
+        switch (Request.Method)
+        {
+            case "GET":
+            {
+                Guard.Against.Null(User?.Identity?.Name, nameof(User.Identity.Name));
+                var viewModel = await _mediator.Send(new GetOrderDetails(User.Identity.Name, orderId));
+
+                if (viewModel == null)
+                {
+                    return BadRequest("No such order found for this user.");
+                }
+                return View(viewModel);
+            }
+            case "POST":
+                Guard.Against.Null(orderId, nameof(orderId));
+
+                await _mediator.Send(new CancelOrder(orderId));
+                break;
+        }
+
+        return RedirectToAction("MyOrders");
+
+    }
+
 }
